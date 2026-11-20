@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دليل مدارس النطاق الرابع</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky header + branching tree sidebar (right, RTL) + content pane: stage → school list → school card → host/hosted school */
+:root {
+  --paper: #f3f6f7;
+  --surface: #ffffff;
+  --sunk: #e8eef0;
+  --ink: #132a2e;
+  --muted: #56696d;
+  --line: #d6e0e2;
+  --brand: #0e6e78;
+  --brand-ink: #ffffff;
+  --on-st: #ffffff;
+  --st-primary: #1f7a64;
+  --st-middle: #2c66a0;
+  --st-secondary: #694c94;
+  --st-early: #c0533a;
+  --merge: #fdf2cc;
+  --merge-line: #e0b73a;
+  --merge-ink: #6e5200;
+  --shadow: 0 1px 2px rgba(19,42,46,.06), 0 8px 24px rgba(19,42,46,.07);
+  --f-display: "Noto Kufi Arabic", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --f-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0c1517; --surface: #132124; --sunk: #1a2c30; --ink: #e3eef0; --muted: #96abb0; --line: #26393d;
+    --brand: #4fc1cb; --brand-ink: #062226; --on-st: #0b1517;
+    --st-primary: #4cc39f; --st-middle: #6fa6e3; --st-secondary: #ae90db; --st-early: #ef8c72;
+    --merge: #3a3013; --merge-line: #c9a02e; --merge-ink: #f3d77a;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0c1517; --surface: #132124; --sunk: #1a2c30; --ink: #e3eef0; --muted: #96abb0; --line: #26393d;
+  --brand: #4fc1cb; --brand-ink: #062226; --on-st: #0b1517;
+  --st-primary: #4cc39f; --st-middle: #6fa6e3; --st-secondary: #ae90db; --st-early: #ef8c72;
+  --merge: #3a3013; --merge-line: #c9a02e; --merge-ink: #f3d77a;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.35; margin: 0; text-wrap: balance; font-weight: 700; }
+h1 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+p { margin: 0; }
+a { color: var(--brand); }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--merge-line); outline-offset: 2px; border-radius: 6px; }
+main:focus, main:focus-visible { outline: none; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+.eyebrow { font-size: .78rem; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+
+/* Stage colour hook: every stage-scoped element reads --st */
+[data-st="primary"] { --st: var(--st-primary); }
+[data-st="middle"] { --st: var(--st-middle); }
+[data-st="secondary"] { --st: var(--st-secondary); }
+[data-st="early"] { --st: var(--st-early); }
+.sw { width: 9px; height: 9px; border-radius: 3px; background: var(--st); flex: none; }
+
+/* Header */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 10px;
+  display: flex; align-items: center; gap: 14px;
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); min-width: 0; }
+.pin { width: 40px; height: 40px; flex: none; border-radius: 10px; background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; }
+.brand > div { min-width: 0; }
+.brand b { font-family: var(--f-display); font-size: 1.05rem; display: block; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand span { font-size: .75rem; color: var(--muted); display: block; white-space: nowrap; }
+.search { flex: 1; max-width: 440px; margin-inline-start: auto; position: relative; }
+.search input { width: 100%; padding: 8px 38px 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--sunk); }
+.search > svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.results { position: absolute; inset-inline: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); max-height: 60vh; overflow: auto; padding: 6px; }
+.results button { display: flex; gap: 10px; align-items: center; width: 100%; text-align: right; background: none; border: 0; padding: 7px 10px; border-radius: 8px; cursor: pointer; }
+.results button:hover, .results button:focus-visible { background: var(--sunk); }
+.results small { color: var(--muted); font-size: .75rem; margin-inline-start: auto; white-space: nowrap; }
+.icon-btn { width: 40px; height: 40px; flex: none; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; cursor: pointer; color: var(--ink); }
+.icon-btn:hover { background: var(--sunk); }
+#menuBtn, #searchBtn { display: none; }
+
+/* Shell + tree */
+.shell { display: grid; grid-template-columns: 270px minmax(0, 1fr); min-height: calc(100vh - 62px); }
+.side { border-left: 1px solid var(--line); background: var(--surface); padding: 16px 12px 40px; position: sticky; top: calc(62px + env(safe-area-inset-top, 0px)); height: calc(100vh - 62px - env(safe-area-inset-top, 0px)); overflow: auto; }
+.tree { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.tree ul { list-style: none; padding: 0 20px 0 0; margin: 2px 19px 6px 0; border-right: 2px solid var(--line); display: grid; gap: 1px; }
+.node { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 8px; border: 0; background: none; cursor: pointer; text-align: right; }
+.node:hover { background: var(--sunk); }
+.node .chev { margin-inline-start: auto; transition: transform .2s; color: var(--muted); }
+.node[aria-expanded="true"] .chev { transform: rotate(-90deg); }
+.node.on { background: var(--brand); color: var(--brand-ink); }
+.leaf { padding: 5px 10px; font-size: .9rem; color: var(--muted); }
+.leaf .ct { margin-inline-start: auto; font-size: .78rem; }
+.leaf.on { background: var(--sunk); color: var(--ink); font-weight: 600; box-shadow: inset -3px 0 0 var(--st); }
+.side-foot { margin-top: 18px; padding: 12px; border-radius: var(--r); background: var(--merge); color: var(--merge-ink); font-size: .8rem; }
+
+main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 60px; min-width: 0; }
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 20px; }
+.crumbs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); }
+.crumbs button { background: none; border: 0; padding: 0; color: var(--brand); cursor: pointer; }
+.crumbs i { font-style: normal; opacity: .6; }
+.head { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; justify-content: space-between; }
+.head p { color: var(--muted); max-width: 65ch; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; min-width: 0; }
+.btn { border: 1px solid transparent; background: var(--brand); color: var(--brand-ink); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; display: inline-flex; gap: 8px; align-items: center; text-decoration: none; }
+.btn.ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 0 9px; border-radius: 999px; font-size: .74rem; font-weight: 600; white-space: nowrap; background: var(--sunk); color: var(--muted); }
+.chip.merge { background: var(--merge); color: var(--merge-ink); }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.filters button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 14px; cursor: pointer; font-size: .85rem; }
+.filters button.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.filters button .num { opacity: .7; margin-inline-start: 4px; }
+
+/* Home */
+/* Masthead: an official-document header, deliberately unlike the filled stage cards below */
+.hero {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+  border-top: 4px solid var(--brand); box-shadow: var(--shadow);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; position: relative;
+}
+.hero::before { content: ""; position: absolute; inset: 8px; border: 1px solid var(--line); border-radius: 2px; pointer-events: none; }
+.hero .txt { padding: 26px 30px 22px; display: grid; gap: 8px; align-content: center; position: relative; }
+.hero .kicker { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-size: .82rem; font-weight: 600; color: var(--brand); letter-spacing: .02em; }
+.hero .kicker::after { content: ""; flex: 1; max-width: 120px; height: 1px; background: var(--brand); opacity: .5; }
+.hero h1 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); font-weight: 800; color: var(--ink); }
+.hero p { color: var(--muted); max-width: 56ch; }
+.hero .total {
+  margin: 8px; padding: 18px 30px; background: var(--brand); color: var(--brand-ink);
+  display: grid; place-content: center; text-align: center; min-width: 170px; position: relative; border-radius: 2px;
+}
+.hero .total b { font-family: var(--f-display); font-size: 3.2rem; font-weight: 800; line-height: 1.1; }
+.hero .total span { font-size: .85rem; font-weight: 600; opacity: .9; }
+.hero .dist { grid-column: 1 / -1; padding: 0 30px 24px; display: grid; gap: 8px; position: relative; }
+.hero .bar { display: flex; height: 10px; border-radius: 2px; overflow: hidden; gap: 2px; }
+.hero .bar i { background: var(--st); }
+.hero .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .8rem; color: var(--muted); }
+.hero .legend span { display: inline-flex; align-items: center; gap: 6px; }
+.stages { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.stage { text-align: right; border: 0; border-radius: var(--r); padding: 20px 20px 24px; cursor: pointer; color: var(--on-st); background: var(--st); display: grid; gap: 2px; position: relative; overflow: hidden; transition: transform .15s; }
+.stage:hover { transform: translateY(-2px); }
+.stage b { font-family: var(--f-display); font-size: 1.35rem; }
+.stage .big { font-family: var(--f-display); font-size: 2.6rem; line-height: 1.1; }
+.stage .go { font-size: .85rem; font-weight: 600; margin-top: 6px; }
+.stage .meter { position: absolute; inset: auto 0 0 0; height: 6px; background: rgba(255,255,255,.22); }
+.stage .meter i { display: block; height: 100%; background: var(--on-st); opacity: .75; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.fact { padding: 14px 18px; border: 0; border-left: 1px solid var(--line); text-align: right; background: none; cursor: pointer; display: grid; }
+.fact:last-child { border-left: 0; }
+.fact:hover { background: var(--sunk); }
+.fact b { font-family: var(--f-display); font-size: 1.7rem; line-height: 1.2; }
+.fact span { font-size: .82rem; color: var(--muted); }
+
+/* School list */
+.stage-head { border-right: 6px solid var(--st); padding-right: 14px; }
+.stage-head h1 { color: var(--st); }
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.local-q { flex: 1; min-width: 200px; max-width: 340px; }
+.local-q input { width: 100%; padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.lrow { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.lrow:last-child { border-bottom: 0; }
+.lrow.hd { background: var(--st); color: var(--on-st); font-size: .8rem; font-weight: 600; padding-block: 7px; }
+.lrow.mg { background: var(--merge); }
+.lrow .m { font-weight: 700; color: var(--muted); text-align: center; }
+.lrow.hd .m { color: inherit; }
+.lrow .nm { background: none; border: 0; padding: 0; text-align: right; cursor: pointer; font-weight: 600; color: var(--ink); }
+.lrow .nm:hover { color: var(--st); text-decoration: underline; }
+.lrow .note { font-size: .8rem; color: var(--merge-ink); margin-top: 2px; }
+.lrow .note button { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font-size: inherit; font-weight: 600; text-align: right; }
+.lrow .tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+.maplink { display: inline-flex; align-items: center; gap: 6px; font-size: .85rem; font-weight: 600; text-decoration: none; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--brand); white-space: nowrap; }
+.maplink:hover { background: var(--sunk); }
+.empty { padding: 26px; text-align: center; color: var(--muted); }
+.group-title { display: flex; align-items: center; gap: 8px; }
+
+/* School card */
+.school { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.school .main { border-top: 6px solid var(--st); display: grid; gap: 14px; }
+.school h1 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); }
+.kv { list-style: none; margin: 0; padding: 0; }
+.kv li { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.kv li:last-child { border-bottom: 0; }
+.kv span:first-child { color: var(--muted); min-width: 100px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.rel { background: var(--merge); border: 1px solid var(--merge-line); border-radius: var(--r); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.rel h3 { color: var(--merge-ink); }
+.building { display: grid; gap: 8px; }
+.bnode { display: flex; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: right; cursor: pointer; width: 100%; }
+.bnode:hover { border-color: var(--st); }
+.bnode.cur { border-color: var(--st); box-shadow: inset -4px 0 0 var(--st); cursor: default; font-weight: 600; }
+.bnode small { color: var(--muted); margin-inline-start: auto; white-space: nowrap; }
+.guests { padding-right: 20px; border-right: 2px dashed var(--merge-line); margin-right: 10px; display: grid; gap: 8px; }
+.pager { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.groups { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; align-items: start; }
+.toast { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 999px; z-index: 50; font-size: .9rem; box-shadow: var(--shadow); }
+.scrim { display: none; }
+
+@media (max-width: 900px) {
+  .facts { grid-template-columns: minmax(0,1fr); }
+  .fact { border-left: 0; border-bottom: 1px solid var(--line); }
+  .fact:last-child { border-bottom: 0; }
+  .school, .groups { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 820px) {
+  #menuBtn { display: grid; }
+  .shell { grid-template-columns: minmax(0,1fr); }
+  .side { position: fixed; top: 0; right: 0; bottom: 0; width: min(300px, 86vw); height: auto; z-index: 40; padding-top: calc(16px + env(safe-area-inset-top, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); transform: translateX(105%); transition: transform .25s; box-shadow: var(--shadow); }
+  .side.open { transform: none; }
+  .scrim.open { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 35; }
+  .brand span { display: none; }
+}
+@media (max-width: 600px) {
+  .stages { grid-template-columns: minmax(0,1fr); }
+  .search { display: none; }
+  .search.show { display: block; position: absolute; inset-inline: 12px; top: 100%; max-width: none; margin-top: 6px; }
+  #searchBtn { display: grid; margin-inline-start: auto; }
+  .lrow { grid-template-columns: 30px minmax(0,1fr); gap: 4px 10px; }
+  .lrow > :last-child { grid-column: 2; justify-self: start; }
+  .lrow.hd > :last-child { display: none; }
+  .local-q { max-width: none; }
+  .brand b { font-size: .92rem; }
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .hero .txt { padding: 22px 20px 12px; }
+  .hero .total { margin: 0 8px; display: flex; align-items: baseline; justify-content: flex-start; gap: 10px; padding: 12px 18px; min-width: 0; }
+  .hero .total b { font-size: 2.2rem; }
+  .hero .dist { padding: 14px 20px 22px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <button class="icon-btn" id="menuBtn" aria-label="فتح القائمة" aria-controls="side" aria-expanded="false">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="brand" href="#home" data-go="home">
+    <div class="pin" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div>
+    <div><b>مدارس النطاق الرابع بنات</b><span>دليل مواقع المدارس</span></div>
+  </a>
+  <div class="search" id="searchBox">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="ابحث باسم المدرسة أو رقمها…" autocomplete="off" aria-label="ابحث عن مدرسة">
+    <div class="results" id="results" hidden></div>
+  </div>
+  <button class="icon-btn" id="searchBtn" aria-label="بحث">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  </button>
+  <button class="icon-btn" id="themeBtn" aria-label="تبديل المظهر">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+</header>
+
+<div class="shell">
+  <nav class="side" id="side" aria-label="التنقل الرئيسي">
+    <ul class="tree" id="tree"></ul>
+    <div class="side-foot">الصفوف المظللة بالأصفر: مدارس التعليم المدمج (مستضيفة / مستضافة) وتشترك في المبنى نفسه.</div>
+  </nav>
+  <div class="scrim" id="scrim"></div>
+  <main id="main" tabindex="-1"><div class="wrap" id="view"></div></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============================================================
+   البيانات: دليل مواقع مدارس النطاق الرابع بنات (143 مدرسة)
+   id: حرف المرحلة + الرقم التسلسلي في الدليل · n: الرقم التسلسلي
+   q: نص البحث في خرائط قوقل كما ورد في الدليل
+   host: المدرسة المستضيفة (للمستضافة) · guests: المدارس المستضافة (للمستضيفة)
+   ============================================================ */
+const SCHOOLS = [{"id":"p1","s":"primary","n":1,"name":"الابتدائية الثانية عشرة بعد المائة 112","q":"الابتدائية الثانية عشرة بعد المائة 112 الرياض"},
+{"id":"p2","s":"primary","n":2,"name":"الابتدائية الثامنة والثلاثون بعد المئتين 238","q":"الابتدائية الثامنة والثلاثون بعد المئتين 238 الرياض"},
+{"id":"p3","s":"primary","n":3,"name":"الابتدائية الرابعة والعشرون لتحفيظ القرآن الكريم 24","q":"الابتدائية الرابعة والعشرون لتحفيظ القرآن الكريم 24 الرياض"},
+{"id":"p4","s":"primary","n":4,"name":"ابتدائية سلطانة بنت عبدالعزيز","q":"ابتدائية سلطانة بنت عبدالعزيز الرياض"},
+{"id":"p5","s":"primary","n":5,"name":"ابتدائية صفية بنت شيبة","q":"ابتدائية صفية بنت شيبة الرياض"},
+{"id":"p6","s":"primary","n":6,"name":"الابتدائية الرابعة بعد الأربعمائة 404","q":"الابتدائية الرابعة بعد الأربعمائة 404 الرياض"},
+{"id":"p7","s":"primary","n":7,"name":"ابتدائية جمانة بنت أبي طالب","q":"ابتدائية جمانة بنت أبي طالب الرياض"},
+{"id":"p8","s":"primary","n":8,"name":"مدرسة المهدية الابتدائية الأولى للبنات","q":"مدرسة المهدية الابتدائية الأولى للبنات الرياض"},
+{"id":"p9","s":"primary","n":9,"name":"مدرسة المهدية الابتدائية الثانية للبنات","q":"مدرسة المهدية الابتدائية الثانية للبنات الرياض"},
+{"id":"p10","s":"primary","n":10,"name":"الابتدائية الستون بعد الثلاثمائة 360","q":"الابتدائية الستون بعد الثلاثمائة 360 الرياض"},
+{"id":"p11","s":"primary","n":11,"name":"الابتدائية الثالثة والعشرون بعد الأربعمائة 423","q":"الابتدائية الثالثة والعشرون بعد الأربعمائة 423 الرياض"},
+{"id":"p12","s":"primary","n":12,"name":"ابتدائية أم حكيم بنت الحارث","q":"ابتدائية أم حكيم بنت الحارث الرياض"},
+{"id":"p13","s":"primary","n":13,"name":"ابتدائية أمامة بنت حمزة","q":"ابتدائية أمامة بنت حمزة الرياض"},
+{"id":"p14","s":"primary","n":14,"name":"ابتدائية أسماء بنت يزيد","q":"ابتدائية أسماء بنت يزيد الرياض"},
+{"id":"p15","s":"primary","n":15,"name":"ابتدائية حفصة بنت عمر لتحفيظ القرآن الكريم","q":"ابتدائية حفصة بنت عمر لتحفيظ القرآن الكريم الرياض"},
+{"id":"p16","s":"primary","n":16,"name":"الابتدائية الثانية عشرة بعد المئتين 212","q":"الابتدائية الثانية عشرة بعد المئتين 212 الرياض"},
+{"id":"p17","s":"primary","n":17,"name":"الابتدائية السابعة والثمانون بعد الثلاثمائة 387","q":"الابتدائية السابعة والثمانون بعد الثلاثمائة 387 الرياض"},
+{"id":"p18","s":"primary","n":18,"name":"الابتدائية السادسة والسبعون بعد المئتين 276","q":"الابتدائية السادسة والسبعون بعد المئتين 276 الرياض"},
+{"id":"p19","s":"primary","n":19,"name":"مدرسة طويق الابتدائية الثانية للبنات","q":"ابتدائية أميمة بنت بشر الرياض","host":"p30"},
+{"id":"p20","s":"primary","n":20,"name":"مدرسة العوالي الابتدائية الأولى للبنات","q":"الابتدائية السادسة والثمانون بعد الثلاثمائة 386 الرياض","host":"p43"},
+{"id":"p21","s":"primary","n":21,"name":"الابتدائية التاسعة والتسعون بعد الثلاثمائة 399","q":"الابتدائية التاسعة والتسعون بعد الثلاثمائة 399 الرياض"},
+{"id":"p22","s":"primary","n":22,"name":"ابتدائية آمنة بنت الأرقم","q":"ابتدائية آمنة بنت الأرقم الرياض"},
+{"id":"p23","s":"primary","n":23,"name":"الابتدائية السادسة بعد المئتين 206","q":"الابتدائية السادسة بعد المئتين 206 الرياض"},
+{"id":"p24","s":"primary","n":24,"name":"الابتدائية السادسة والأربعون بعد المئتين 246","q":"الابتدائية السادسة والأربعون بعد المئتين 246 الرياض"},
+{"id":"p25","s":"primary","n":25,"name":"الابتدائية الثانية والثلاثون بعد المئتين 232","q":"مدرسة ال 232 الابتدائية بنات، شارع خديجة بنت خويلد، حي طويق، الرياض 14914","guests":["e10","e11"]},
+{"id":"p26","s":"primary","n":26,"name":"الابتدائية الثالثة والخمسون بعد المئتان 253","q":"الابتدائية الثالثة والخمسون بعد المئتان 253 الرياض"},
+{"id":"p27","s":"primary","n":27,"name":"الابتدائية العاشرة بعد المئتين 210","q":"الابتدائية العاشرة بعد المئتين 210 الرياض"},
+{"id":"p28","s":"primary","n":28,"name":"الابتدائية الثامنة والخمسون بعد الثلاثمائة 358","q":"الابتدائية الثامنة والخمسون بعد الثلاثمائة 358 الرياض"},
+{"id":"p29","s":"primary","n":29,"name":"الابتدائية التسعون بعد المائة 190","q":"الابتدائية التسعون بعد المائة 190 الرياض"},
+{"id":"p30","s":"primary","n":30,"name":"ابتدائية أميمة بنت بشر","q":"ابتدائية أميمة بنت بشر الرياض","guests":["p19"]},
+{"id":"p31","s":"primary","n":31,"name":"الابتدائية السابعة والستون 67","q":"الابتدائية السابعة والستون 67 الرياض"},
+{"id":"p32","s":"primary","n":32,"name":"الابتدائية الحادية والخمسون الثلاثمائة 351","q":"الابتدائية الحادية والخمسون الثلاثمائة 351 الرياض"},
+{"id":"p33","s":"primary","n":33,"name":"مدرسة طويق الابتدائية الأولى للبنات","q":"مدرسة طويق الابتدائية الأولى للبنات الرياض"},
+{"id":"p34","s":"primary","n":34,"name":"الابتدائية الثانية 2 بعرقة","q":"الابتدائية الثانية 2 بعرقة الرياض"},
+{"id":"p35","s":"primary","n":35,"name":"الابتدائية الثالثة والثمانون بعد الثلاثمائة 383","q":"الابتدائية الثالثة والثمانون بعد الثلاثمائة 383 الرياض"},
+{"id":"p36","s":"primary","n":36,"name":"الابتدائية الخامسة لتحفيظ القرآن الكريم بالرياض","q":"الابتدائية الخامسة لتحفيظ القرآن الكريم بالرياض الرياض"},
+{"id":"p37","s":"primary","n":37,"name":"ابتدائية سلاف الأنصارية","q":"ابتدائية سلاف الأنصارية الرياض"},
+{"id":"p38","s":"primary","n":38,"name":"ابتدائية ليلى الغفارية","q":"ابتدائية ليلى الغفارية الرياض","guests":["p50"]},
+{"id":"p39","s":"primary","n":39,"name":"الابتدائية الاولى 1 بعرقة","q":"الابتدائية الاولى 1 بعرقة الرياض"},
+{"id":"p40","s":"primary","n":40,"name":"مجمع جميلة الأنصارية التعليمي للبنات - القسم الابتدائي","q":"الابتدائية التاسعة والعشرون بعد الثلاثمائة 329 الرياض"},
+{"id":"p41","s":"primary","n":41,"name":"الابتدائية السادسة والعشرون بعد المئتين 226","q":"الابتدائية السادسة والعشرون بعد المئتين 226 الرياض"},
+{"id":"p42","s":"primary","n":42,"name":"الابتدائية التاسعة بعد الثلاثمائة 309","q":"الابتدائية التاسعة بعد الثلاثمائة 309 الرياض"},
+{"id":"p43","s":"primary","n":43,"name":"الابتدائية السادسة والثمانون بعد الثلاثمائة 386","q":"الابتدائية السادسة والثمانون بعد الثلاثمائة 386 الرياض","guests":["p20"]},
+{"id":"p44","s":"primary","n":44,"name":"ابتدائية صفية بنت عبدالمطلب","q":"ابتدائية صفية بنت عبدالمطلب الرياض"},
+{"id":"p45","s":"primary","n":45,"name":"ابتدائية سعدى بنت عوف","q":"ابتدائية سعدى بنت عوف الرياض"},
+{"id":"p46","s":"primary","n":46,"name":"الابتدائية الثامنة بعد الثلاثمائة 308","q":"الابتدائية الثامنة بعد الثلاثمائة 308 الرياض"},
+{"id":"p47","s":"primary","n":47,"name":"ابتدائية أمامه بنت أبي العاص","q":"ابتدائية أمامه بنت أبي العاص الرياض"},
+{"id":"p48","s":"primary","n":48,"name":"ابتدائية حسناء بنت معاوية","q":"ابتدائية حسناء بنت معاوية الرياض"},
+{"id":"p49","s":"primary","n":49,"name":"ابتدائية أمامة بنت عثمان","q":"ابتدائية أمامة بنت عثمان الرياض"},
+{"id":"p50","s":"primary","n":50,"name":"مدرسة طويق الابتدائية الثالثة للبنات","q":"ابتدائية ليلى الغفارية الرياض","host":"p38"},
+{"id":"p51","s":"primary","n":51,"name":"الابتدائية الحادية والثمانون بعد المائة 181","q":"الابتدائية الحادية والثمانون بعد المائة 181 الرياض"},
+{"id":"p52","s":"primary","n":52,"name":"الابتدائية الثانية عشرة لتحفيظ القرآن الكريم 12","q":"الابتدائية الثانية عشرة لتحفيظ القرآن الكريم 12 الرياض"},
+{"id":"p53","s":"primary","n":53,"name":"الابتدائية الثامنة والعشرون بعد المئتين 228","q":"الابتدائية الثامنة والعشرون بعد المئتين 228 الرياض"},
+{"id":"p54","s":"primary","n":54,"name":"الابتدائية الحادية بعد الثلاثمائة 301","q":"الابتدائية الحادية بعد الثلاثمائة 301 الرياض"},
+{"id":"p55","s":"primary","n":55,"name":"الابتدائية الثانية بعد الثلاثمائة 302","q":"الابتدائية الثانية بعد الثلاثمائة 302 الرياض"},
+{"id":"p56","s":"primary","n":56,"name":"الابتدائية السادسة والتسعون بعد المائة 196","q":"الابتدائية السادسة والتسعون بعد المائة 196 الرياض"},
+{"id":"p57","s":"primary","n":57,"name":"الابتدائية الحادية عشرة بعد الأربعمائة 411","q":"الابتدائية الحادية عشرة بعد الأربعمائة 411 الرياض"},
+{"id":"p58","s":"primary","n":58,"name":"ابتدائية سهيمة الانصارية","q":"ابتدائية سهيمة الانصارية الرياض"},
+{"id":"p59","s":"primary","n":59,"name":"الابتدائية الثامنة والثمانون بعد الثلاثمائة 388","q":"الابتدائية الثامنة والثمانون بعد الثلاثمائة 388 الرياض"},
+{"id":"m1","s":"middle","n":1,"name":"المتوسطة السابعة والأربعون 47","q":"المتوسطة السابعة والأربعون 47 الرياض"},
+{"id":"m2","s":"middle","n":2,"name":"متوسطة هند بنت الحكم","q":"متوسطة هند بنت الحكم الرياض"},
+{"id":"m3","s":"middle","n":3,"name":"المتوسطة التاسعة والثلاثون بعد المائة 139","q":"المتوسطة التاسعة والثلاثون بعد المائة 139 الرياض"},
+{"id":"m4","s":"middle","n":4,"name":"متوسطة هيا بنت عبدالعزيز","q":"متوسطة هيا بنت عبدالعزيز الرياض"},
+{"id":"m5","s":"middle","n":5,"name":"مدرسة المهدية المتوسطة الأولى للبنات","q":"مدرسة المهدية المتوسطة الأولى للبنات الرياض"},
+{"id":"m6","s":"middle","n":6,"name":"المتوسطة الحادية عشرة بعد المئتين 211","q":"المتوسطة الحادية عشرة بعد المئتين 211 الرياض"},
+{"id":"m7","s":"middle","n":7,"name":"متوسطة سعاد بنت سلمة","q":"متوسطة سعاد بنت سلمة الرياض"},
+{"id":"m8","s":"middle","n":8,"name":"متوسطة أم أيمن بركة بنت ثعلبة","q":"متوسطة أم أيمن بركة بنت ثعلبة الرياض"},
+{"id":"m9","s":"middle","n":9,"name":"متوسطة أسماء بنت الحارث","q":"متوسطة أسماء بنت الحارث الرياض"},
+{"id":"m10","s":"middle","n":10,"name":"المتوسطة الحادية والسبعون يعد المائة 171","q":"المتوسطة الحادية والسبعون يعد المائة 171 الرياض"},
+{"id":"m11","s":"middle","n":11,"name":"مدرسة طويق المتوسطة الأولى للبنات","q":"المتوسطة السبعون بعد المائة 170 الرياض","host":"m18"},
+{"id":"m12","s":"middle","n":12,"name":"المتوسطة الخامسة والثلاثون بعد المئتين 235","q":"المتوسطة الخامسة والثلاثون بعد المئتين 235 الرياض"},
+{"id":"m13","s":"middle","n":13,"name":"المتوسطة الرابعة عشرة بعد المائة 114","q":"المتوسطة الرابعة عشرة بعد المائة 114 الرياض"},
+{"id":"m14","s":"middle","n":14,"name":"المتوسطة الثمانون 80","q":"المتوسطة الثمانون 80 الرياض"},
+{"id":"m15","s":"middle","n":15,"name":"المتوسطة الثالثة بعد المائة 103","q":"المتوسطة الثالثة بعد المائة 103 الرياض"},
+{"id":"m16","s":"middle","n":16,"name":"المتوسطة الثامنة والسبعون بعد المائة 178","q":"المتوسطة الثامنة والسبعون بعد المائة 178 الرياض"},
+{"id":"m17","s":"middle","n":17,"name":"المتوسطة الحادية والثمانون 81","q":"المتوسطة الحادية والثمانون 81 الرياض"},
+{"id":"m18","s":"middle","n":18,"name":"المتوسطة السبعون بعد المائة 170","q":"المتوسطة السبعون بعد المائة 170 الرياض","guests":["m11"]},
+{"id":"m19","s":"middle","n":19,"name":"المتوسطة الرابعة والتسعون 94","q":"المتوسطة الرابعة والتسعون 94 الرياض"},
+{"id":"m20","s":"middle","n":20,"name":"المتوسطة الثامنة عشرة 18 بالرياض","q":"المتوسطة الثامنة عشرة 18 بالرياض الرياض"},
+{"id":"m21","s":"middle","n":21,"name":"المتوسطة الخامسة لتحفيظ القرآن الكريم 5 بالرياض","q":"المتوسطة الخامسة لتحفيظ القرآن الكريم 5 بالرياض الرياض"},
+{"id":"m22","s":"middle","n":22,"name":"متوسطة نائلة بنت عمارة","q":"متوسطة نائلة بنت عمارة الرياض","guests":["m30"]},
+{"id":"m23","s":"middle","n":23,"name":"متوسطة عرقه الأولى 1","q":"متوسطة عرقه الآولى 1 الرياض"},
+{"id":"m24","s":"middle","n":24,"name":"مجمع جميلة الأنصارية التعليمي للبنات - القسم المتوسط","q":"المتوسطة السابعة والثلاثون بعد المائة 137 الرياض"},
+{"id":"m25","s":"middle","n":25,"name":"المتوسطة الثامنة والخمسون بعد المائة 158","q":"المتوسطة الثامنة والخمسون بعد المائة 158 الرياض"},
+{"id":"m26","s":"middle","n":26,"name":"متوسطة سلمى بنت ربيعة","q":"متوسطة سلمى بنت ربيعة الرياض"},
+{"id":"m27","s":"middle","n":27,"name":"متوسطة رملة بنت أبي سفيان","q":"متوسطة رملة بنت أبي سفيان الرياض"},
+{"id":"m28","s":"middle","n":28,"name":"متوسطة أم كلثوم بنت النبي صلى الله عليه وسلم","q":"متوسطة أم كلثوم بنت النبي صلى الله عليه وسلم الرياض"},
+{"id":"m29","s":"middle","n":29,"name":"متوسطة الرباب بنت البراء","q":"متوسطة الرباب بنت البراء الرياض"},
+{"id":"m30","s":"middle","n":30,"name":"مدرسة طويق المتوسطة الثانية للبنات","q":"متوسطة نائلة بنت عمارة الرياض","host":"m22"},
+{"id":"m31","s":"middle","n":31,"name":"المتوسطة السابعة والستون 67","q":"المتوسطة السابعة والستون 67 الرياض"},
+{"id":"m32","s":"middle","n":32,"name":"المتوسطة الثانية عشرة لتحفيظ القرآن الكريم 12","q":"المتوسطة الثانية عشرة لتحفيظ القرآن الكريم 12 الرياض"},
+{"id":"m33","s":"middle","n":33,"name":"المتوسطة الثانية والثمانون بعد المائة 182","q":"المتوسطة الثانية والثمانون بعد المائة 182 الرياض"},
+{"id":"m34","s":"middle","n":34,"name":"المتوسطة السادسة والثمانون 86","q":"المتوسطة السادسة والثمانون 86 الرياض"},
+{"id":"m35","s":"middle","n":35,"name":"المتوسطة الثالثة والثلاثون بعد المائة 133","q":"المتوسطة الثالثة والثلاثون بعد المائة 133 الرياض"},
+{"id":"m36","s":"middle","n":36,"name":"متوسطة زينب بنت علي بن أبي طالب","q":"متوسطة زينب بنت علي بن أبي طالب الرياض"},
+{"id":"m37","s":"middle","n":37,"name":"متوسطة سناء السلمية","q":"متوسطة سناء السلمية الرياض"},
+{"id":"s1","s":"secondary","n":1,"name":"الثانوية الحادية والأربعون 41 - مسارات","q":"الثانوية الحادية والأربعون 41 الرياض"},
+{"id":"s2","s":"secondary","n":2,"name":"ثانوية ام المؤمنين جويرية - مسارات","q":"ثانوية ام المؤمنين جويرية الرياض"},
+{"id":"s3","s":"secondary","n":3,"name":"الثانوية الثامنة بعد المائة 108 - مسارات","q":"الثانوية الثامنة بعد المائة 108 الرياض"},
+{"id":"s4","s":"secondary","n":4,"name":"مدرسة المهدية الثانوية الأولى للبنات","q":"مدرسة المهدية الثانوية الأولى للبنات الرياض"},
+{"id":"s5","s":"secondary","n":5,"name":"الثانوية الثانية والأربعون بعد المائة 142 - مسارات","q":"الثانوية الثانية والأربعون بعد المائة 142 الرياض"},
+{"id":"s6","s":"secondary","n":6,"name":"ثانوية سمية بنت الخياط - مسارات","q":"ثانوية سمية بنت الخياط الرياض"},
+{"id":"s7","s":"secondary","n":7,"name":"الثانوية الخامسة والثمانون 85 - مسارات","q":"الثانوية الخامسة والثمانون 85 الرياض"},
+{"id":"s8","s":"secondary","n":8,"name":"الثانوية الخامسة والأربعون بعد المائة 145 - مسارات","q":"الثانوية الخامسة والأربعون بعد المائة 145 الرياض"},
+{"id":"s9","s":"secondary","n":9,"name":"مدرسة العوالي الثانوية الأولى للبنات","q":"الثانوية المائة 100 الرياض","host":"s22"},
+{"id":"s10","s":"secondary","n":10,"name":"الثانوية الثانية والستون بعد المائة 162 - مسارات","q":"الثانوية الثانية والستون بعد المائة 162 الرياض"},
+{"id":"s11","s":"secondary","n":11,"name":"ثانوية صيتة بنت عبدالعزيز - مسارات","q":"ثانوية صيتة بنت عبدالعزيز الرياض"},
+{"id":"s12","s":"secondary","n":12,"name":"الثانوية الثالثة والاربعون بعد المائة 143 - مسارات","q":"الثانوية الثالثة والاربعون بعد المائة 143 الرياض"},
+{"id":"s13","s":"secondary","n":13,"name":"الثانوية التاسعة والستون 69 - مسارات","q":"الثانوية التاسعة والستون 69 الرياض"},
+{"id":"s14","s":"secondary","n":14,"name":"الثانوية الثانية والتسعون92 - مسارات","q":"الثانوية الثانية والتسعون92 الرياض"},
+{"id":"s15","s":"secondary","n":15,"name":"ثانوية حواء الأنصارية - مسارات","q":"ثانوية حواء الأنصارية الرياض"},
+{"id":"s16","s":"secondary","n":16,"name":"الثانوية الثلاثون بعد المائة 130- مسارات","q":"الثانوية الثلاثون بعد المائة 130 الرياض"},
+{"id":"s17","s":"secondary","n":17,"name":"الثانوية الحادية عشرة 11 - مسارات","q":"الثانوية الحادية عشرة 11 الرياض"},
+{"id":"s18","s":"secondary","n":18,"name":"الثانوية السابعة والستون بعد المائة 167 - مسارات","q":"الثانوية السابعة والستون بعد المائة 167 الرياض","guests":["s25"]},
+{"id":"s19","s":"secondary","n":19,"name":"ثانوية عرقة للبنات","q":"ثانوية عرقة للبنات الرياض"},
+{"id":"s20","s":"secondary","n":20,"name":"مجمع جميلة الأنصارية التعليمي للبنات - القسم الثانوي","q":"الثانوية الثالثة والتسعون 93 الرياض"},
+{"id":"s21","s":"secondary","n":21,"name":"الثانوية الثالثة والخمسون 53 - مسارات","q":"الثانوية الثالثة والخمسون 53 الرياض"},
+{"id":"s22","s":"secondary","n":22,"name":"الثانوية المائة 100 - مسارات","q":"الثانوية المائة 100 الرياض","guests":["s9"]},
+{"id":"s23","s":"secondary","n":23,"name":"ثانوية البندري بنت عبدالعزيز - مسارات","q":"ثانوية البندري بنت عبدالعزيز الرياض"},
+{"id":"s24","s":"secondary","n":24,"name":"ثانوية طرفة بنت عبدالعزيز - مسارات","q":"ثانوية طرفة بنت عبدالعزيز الرياض"},
+{"id":"s25","s":"secondary","n":25,"name":"مدرسة طويق الثانوية الأولى للبنات","q":"الثانوية السابعة والستون بعد المائة 167 الرياض","host":"s18"},
+{"id":"s26","s":"secondary","n":26,"name":"الثانوية السابعة والأربعون 47 - مسارات","q":"الثانوية السابعة والأربعون 47 الرياض"},
+{"id":"s27","s":"secondary","n":27,"name":"ثانوية جميلة المخزومية - مسارات","q":"ثانوية جميلة المخزومية الرياض"},
+{"id":"s28","s":"secondary","n":28,"name":"ثانوية درة بنت أبي سفيان - مسارات","q":"ثانوية درة بنت أبي سفيان الرياض"},
+{"id":"e1","s":"early","n":1,"name":"مدرسة عصماء بنت الحارث للطفولة المبكرة","q":"مدرسة عصماء بنت الحارث للطفولة المبكرة الرياض"},
+{"id":"e2","s":"early","n":2,"name":"مدرسة أم حبيبة بنت أسد للطفولة المبكرة","q":"مدرسة أم حبيبة بنت أسد للطفولة المبكرة الرياض"},
+{"id":"e3","s":"early","n":3,"name":"مدرسة سالم بن عبدالله للطفولة المبكرة","q":"مدرسة سالم بن عبدالله للطفولة المبكرة الرياض"},
+{"id":"e4","s":"early","n":4,"name":"مدرسة يحيى بن يعمر للطفولة المبكرة","q":"مدرسة يحيى بن يعمر للطفولة المبكرة الرياض"},
+{"id":"e5","s":"early","n":5,"name":"مدرسة همام بن الحارث للطفولة المبكرة","q":"مدرسة همام بن الحارث للطفولة المبكرة الرياض"},
+{"id":"e6","s":"early","n":6,"name":"مدرسة سفيان الثوري للطفولة المبكرة","q":"مدرسة سفيان الثوري للطفولة المبكرة الرياض"},
+{"id":"e7","s":"early","n":7,"name":"مدرسة أم الحكم بنت الزبير للطفولة المبكرة لتحفيظ القرآن الكريم","q":"مدرسة أم الحكم بنت الزبير للطفولة المبكرة لتحفيظ القرآن الكريم الرياض"},
+{"id":"e8","s":"early","n":8,"name":"مدرسة نسيبة بنت الحارث للطفولة المبكرة","q":"مدرسة نسيبة بنت الحارث للطفولة المبكرة الرياض"},
+{"id":"e9","s":"early","n":9,"name":"مدرسة أم الدرداء للطفولة المبكرة","q":"مدرسة أم الدرداء للطفولة المبكرة الرياض"},
+{"id":"e10","s":"early","n":10,"name":"مدرسة ابن حزم للطفولة المبكرة","q":"مدرسة ال 232 الابتدائية بنات، شارع خديجة بنت خويلد، حي طويق، الرياض 14914","host":"p25"},
+{"id":"e11","s":"early","n":11,"name":"مدرسة أم جميل بنت الخطاب للطفولة المبكرة لتحفيظ القرآن الكريم","q":"مدرسة ال 232 الابتدائية بنات، شارع خديجة بنت خويلد، حي طويق، الرياض 14914","host":"p25"},
+{"id":"e12","s":"early","n":12,"name":"مدرسة شرفة بنت الحارث للطفولة المبكرة","q":"مدرسة شرفة بنت الحارث للطفولة المبكرة الرياض"},
+{"id":"e13","s":"early","n":13,"name":"مدرسة عتبة بن أسيد للطفولة المبكرة","q":"مدرسة عتبة بن أسيد للطفولة المبكرة الرياض"},
+{"id":"e14","s":"early","n":14,"name":"مدرسة أم الحسن البصري للطفولة المبكرة","q":"مدرسة أم الحسن البصري للطفولة المبكرة الرياض"},
+{"id":"e15","s":"early","n":15,"name":"ابتدائية زيد بن الخطاب للطفولة المبكرة","q":"ابتدائية زيد بن الخطاب للطفولة المبكرة الرياض"},
+{"id":"e16","s":"early","n":16,"name":"مدرسة عرقة الأولى للطفولة المبكرة","q":"مدرسة عرقة الأولى للطفولة المبكرة الرياض"},
+{"id":"e17","s":"early","n":17,"name":"مدرسة ثابت بن النعمان للطفولة المبكرة","q":"مدرسة ثابت بن النعمان للطفولة المبكرة الرياض"},
+{"id":"e18","s":"early","n":18,"name":"مدرسة هلال بن أمية للطفولة المبكرة","q":"مدرسة هلال بن أمية للطفولة المبكرة الرياض"},
+{"id":"e19","s":"early","n":19,"name":"مدرسة أم زيد بنت عتبة للطفولة المبكرة","q":"مدرسة أم زيد بنت عتبة للطفولة المبكرة الرياض"}];
+
+const STAGES = [
+  { id: "primary", name: "المرحلة الابتدائية", short: "ابتدائي" },
+  { id: "middle", name: "المرحلة المتوسطة", short: "متوسط" },
+  { id: "secondary", name: "المرحلة الثانوية", short: "ثانوي" },
+  { id: "early", name: "الطفولة المبكرة", short: "طفولة مبكرة" }
+];
+const STAGE = Object.fromEntries(STAGES.map(s => [s.id, s]));
+const BY_ID = Object.fromEntries(SCHOOLS.map(s => [s.id, s]));
+const inStage = id => SCHOOLS.filter(s => s.s === id);
+const mapUrl = s => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(s.q);
+
+const TAGS = [
+  ["merged", "تعليم مدمج", s => !!(s.host || s.guests)],
+  ["quran", "تحفيظ القرآن الكريم", s => s.name.includes("تحفيظ")],
+  ["tracks", "نظام المسارات", s => s.name.includes("مسارات")],
+  ["complex", "مجمع تعليمي", s => s.name.includes("مجمع")]
+];
+const TAG = Object.fromEntries(TAGS.map(t => [t[0], t]));
+const tagsOf = s => TAGS.filter(t => t[2](s));
+
+/* ============================================================
+   الحالة والتنقل
+   ============================================================ */
+const S = { view: "home", arg: null, filter: "all", local: "", open: new Set(["stages", "types"]) };
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("r4:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("r4:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const PIN = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>`;
+const mapLink = (s, label = "خرائط قوقل") => `<a class="maplink" href="${esc(mapUrl(s))}" target="_blank" rel="noopener" aria-label="موقع ${esc(s.name)} على خرائط قوقل">${PIN}${label}</a>`;
+const TOKEN = { stage: a => a, school: a => "school-" + a, tag: a => "tag-" + a };
+
+function go(view, arg = null) {
+  if (view !== S.view || arg !== S.arg) { S.filter = "all"; S.local = ""; }
+  S.view = view; S.arg = arg;
+  try { history.replaceState(null, "", "#" + (TOKEN[view] ? TOKEN[view](arg) : view)); } catch (e) {}
+  closeDrawer(); renderTree(); render();
+  $("#main").focus({ preventScroll: true }); window.scrollTo({ top: 0 });
+}
+const curStage = () => S.view === "stage" ? S.arg : S.view === "school" ? BY_ID[S.arg]?.s : null;
+
+const ICON = {
+  home: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',
+  stages: '<path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+  types: '<path d="M4 6h16M4 12h10M4 18h6"/>',
+  merged: '<path d="M3 21V9l9-5 9 5v12"/><path d="M9 21v-6h6v6"/>'
+};
+const ic = k => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+const CHEV = `<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg>`;
+
+function renderTree() {
+  const st = curStage();
+  const branch = (key, label, kids) => `<li><button class="node" data-toggle="${key}" aria-expanded="${S.open.has(key)}">${ic(key)}<span>${label}</span>${CHEV}</button>${S.open.has(key) ? `<ul>${kids}</ul>` : ""}</li>`;
+  $("#tree").innerHTML =
+    `<li><button class="node ${S.view === "home" ? "on" : ""}" data-go="home">${ic("home")}<span>الواجهة الرئيسية</span></button></li>` +
+    branch("stages", "المراحل الدراسية", STAGES.map(s => `<li><button class="node leaf ${st === s.id ? "on" : ""}" data-st="${s.id}" data-go="stage:${s.id}"><span class="sw"></span>${s.name}<span class="ct num">${inStage(s.id).length}</span></button></li>`).join("")) +
+    branch("types", "حسب نوع المدرسة", TAGS.filter(t => t[0] !== "merged").map(t => `<li><button class="node leaf ${S.view === "tag" && S.arg === t[0] ? "on" : ""}" data-go="tag:${t[0]}">${t[1]}<span class="ct num">${SCHOOLS.filter(t[2]).length}</span></button></li>`).join("")) +
+    `<li><button class="node ${S.view === "merged" ? "on" : ""}" data-go="merged">${ic("merged")}<span>مدارس التعليم المدمج</span></button></li>`;
+}
+
+function crumbs(items) {
+  const all = [["home", null, "الواجهة الرئيسية"], ...items];
+  return `<nav class="crumbs" aria-label="مسار التنقل">${all.map((it, i) => i === all.length - 1
+    ? `<span aria-current="page">${esc(it[2])}</span>`
+    : `<button data-go="${it[0]}${it[1] ? ":" + it[1] : ""}">${esc(it[2])}</button><i>‹</i>`).join("")}</nav>`;
+}
+
+/* ============================================================
+   الصفحات
+   ============================================================ */
+const PAGES = {
+  home() {
+    const total = SCHOOLS.length;
+    const max = Math.max(...STAGES.map(s => inStage(s.id).length));
+    const count = k => SCHOOLS.filter(TAG[k][2]).length;
+    return `
+    <section class="hero">
+      <div class="txt">
+        <span class="kicker">دليل مواقع المدارس</span>
+        <h1>مدارس النطاق الرابع بنات</h1>
+        <p>اختر المرحلة الدراسية لعرض مدارسها وروابط مواقعها على خرائط قوقل.</p>
+      </div>
+      <div class="total"><b class="num">${total}</b><span>إجمالي المدارس</span></div>
+      <div class="dist">
+        <div class="bar" role="img" aria-label="توزيع المدارس على المراحل">${STAGES.map(s => `<i data-st="${s.id}" style="flex:${inStage(s.id).length}"></i>`).join("")}</div>
+        <div class="legend">${STAGES.map(s => `<span data-st="${s.id}"><span class="sw"></span>${s.name} <b class="num">${inStage(s.id).length}</b></span>`).join("")}</div>
+      </div>
+    </section>
+    <section class="stages" aria-label="المراحل الدراسية">
+      ${STAGES.map(s => { const n = inStage(s.id).length; return `
+        <button class="stage" data-st="${s.id}" data-go="stage:${s.id}">
+          <b>${s.name}</b><span class="big num">${n}</span><span>مدرسة · <span class="num">${Math.round(n / total * 100)}٪</span> من مدارس النطاق</span>
+          <span class="go">عرض المدارس ←</span><span class="meter"><i style="width:${n / max * 100}%"></i></span>
+        </button>`; }).join("")}
+    </section>
+    <section class="facts" aria-label="تصنيفات المدارس">
+      <button class="fact" data-go="merged"><b class="num">${count("merged")}</b><span>مدرسة ضمن التعليم المدمج (تشترك في مبنى)</span></button>
+      <button class="fact" data-go="tag:quran"><b class="num">${count("quran")}</b><span>مدارس لتحفيظ القرآن الكريم</span></button>
+      <button class="fact" data-go="tag:tracks"><b class="num">${count("tracks")}</b><span>ثانوية بنظام المسارات</span></button>
+    </section>
+    <p class="small muted">كل مرحلة تفتح على قائمة بأسماء مدارسها، ومع كل مدرسة رابط «خرائط قوقل» لموقعها. اضغط على اسم المدرسة لعرض بطاقتها والمدارس التي تشاركها المبنى.</p>`;
+  },
+
+  stage() {
+    const st = STAGE[S.arg];
+    const all = inStage(st.id);
+    const avail = TAGS.filter(t => all.some(t[2]));
+    const tag = TAG[S.filter];
+    const q = norm(S.local.trim());
+    const list = all.filter(s => (!tag || tag[2](s)) && (!q || norm(s.name + " " + s.n).includes(q)));
+    return crumbs([["stage", st.id, st.name]]) + `
+      <div class="head stage-head" data-st="${st.id}"><div><h1>${st.name}</h1><p>عدد المدارس: <b class="num">${all.length}</b> مدرسة</p></div></div>
+      <div class="toolbar">
+        <div class="filters" role="group" aria-label="تصفية المدارس">
+          <button class="${S.filter === "all" ? "on" : ""}" data-filter="all">الكل<span class="num">${all.length}</span></button>
+          ${avail.map(t => `<button class="${S.filter === t[0] ? "on" : ""}" data-filter="${t[0]}">${t[1]}<span class="num">${all.filter(t[2]).length}</span></button>`).join("")}
+        </div>
+        <div class="local-q"><input id="localQ" type="search" placeholder="تصفية بالاسم أو الرقم…" value="${esc(S.local)}" aria-label="تصفية قائمة المدارس"></div>
+      </div>
+      ${listHTML(st.id, list, `لا توجد مدرسة تطابق «${esc(S.local)}» في هذا التصنيف. امسح التصفية أو جرّب رقم المدرسة.`)}
+      <p class="small muted">يعرض <span class="num">${list.length}</span> من <span class="num">${all.length}</span> مدرسة.</p>`;
+  },
+
+  tag() {
+    const t = TAG[S.arg];
+    const all = SCHOOLS.filter(t[2]);
+    return crumbs([["tag", t[0], t[1]]]) + `
+      <div class="head"><div><h1>مدارس ${t[1]}</h1><p><b class="num">${all.length}</b> مدرسة موزعة على المراحل الدراسية.</p></div></div>
+      ${STAGES.filter(s => all.some(x => x.s === s.id)).map(s => `
+        <section style="display:grid;gap:10px">
+          <h2 class="group-title" data-st="${s.id}"><span class="sw"></span>${s.name} <span class="small muted num">(${all.filter(x => x.s === s.id).length})</span></h2>
+          ${listHTML(s.id, all.filter(x => x.s === s.id))}
+        </section>`).join("")}`;
+  },
+
+  school() {
+    const s = BY_ID[S.arg];
+    const st = STAGE[s.s];
+    const sib = inStage(s.s);
+    const i = sib.indexOf(s);
+    const prev = sib[i - 1], next = sib[i + 1];
+    const host = s.host ? BY_ID[s.host] : s.guests ? s : null;
+    const tags = tagsOf(s);
+    const status = s.host ? "مستضافة في مبنى مدرسة أخرى" : s.guests ? `مستضيفة لـ ${s.guests.length === 1 ? "مدرسة واحدة" : "مدرستين"}` : "مبنى مستقل";
+    return crumbs([["stage", st.id, st.name], ["school", s.id, s.name]]) + `
+      <div class="school">
+        <div class="panel main" data-st="${s.s}">
+          <div><span class="eyebrow">${st.name} · رقم <span class="num">${s.n}</span> في الدليل</span><h1>${esc(s.name)}</h1></div>
+          ${tags.length ? `<div class="filters">${tags.map(t => `<button class="chip ${t[0] === "merged" ? "merge" : ""}" style="border:0;cursor:pointer" data-go="${t[0] === "merged" ? "merged" : "tag:" + t[0]}">${t[1]}</button>`).join("")}</div>` : ""}
+          <ul class="kv">
+            <li><span>المرحلة</span><span>${st.name}</span></li>
+            <li><span>النطاق</span><span>النطاق الرابع — بنات</span></li>
+            <li><span>المبنى</span><span>${status}</span></li>
+          </ul>
+          <div class="actions">
+            <a class="btn" href="${esc(mapUrl(s))}" target="_blank" rel="noopener">${PIN} فتح الموقع في خرائط قوقل</a>
+            <button class="btn ghost" data-copy="${esc(s.name)}">نسخ اسم المدرسة</button>
+          </div>
+          ${s.host ? `<p class="small muted">رابط الخريطة يشير إلى المبنى المستضيف لأن المدرستين في المبنى نفسه.</p>` : ""}
+        </div>
+        <div style="display:grid;gap:16px">
+          ${host ? `<div class="rel"><h3>مبنى مشترك (تعليم مدمج)</h3>
+            <div class="building">${bnode(host, "مستضيفة")}<div class="guests">${host.guests.map(g => bnode(BY_ID[g], "مستضافة")).join("")}</div></div></div>` : ""}
+          <div class="panel" style="display:grid;gap:10px"><h3>التنقل داخل ${st.name}</h3>
+            <div class="pager">
+              ${prev ? `<button class="btn ghost" data-go="school:${prev.id}" aria-label="السابقة: ${esc(prev.name)}">→ السابقة <span class="num">${prev.n}</span></button>` : "<span></span>"}
+              ${next ? `<button class="btn ghost" data-go="school:${next.id}" aria-label="التالية: ${esc(next.name)}">التالية <span class="num">${next.n}</span> ←</button>` : "<span></span>"}
+            </div>
+            <button class="btn ghost" data-go="stage:${st.id}" style="justify-self:start">كل مدارس ${st.name} (<span class="num">${sib.length}</span>)</button>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  merged() {
+    const hosts = SCHOOLS.filter(s => s.guests);
+    const n = hosts.reduce((a, h) => a + 1 + h.guests.length, 0);
+    return crumbs([["merged", null, "مدارس التعليم المدمج"]]) + `
+      <div class="head"><div><h1>مدارس التعليم المدمج</h1>
+        <p><span class="num">${hosts.length}</span> مبانٍ تستضيف كل منها مدرسة أو مدرستين، والمجموع <span class="num">${n}</span> مدرسة تشترك في المبنى نفسه. اضغط على أي مدرسة لفتح بطاقتها.</p></div></div>
+      <div class="groups">${hosts.map(h => `
+        <div class="rel"><div class="building">${bnode(h, "مستضيفة", true)}
+          <div class="guests">${h.guests.map(g => bnode(BY_ID[g], "مستضافة", true)).join("")}</div></div>
+          <div>${mapLink(h, "موقع المبنى")}</div></div>`).join("")}
+      </div>`;
+  }
+};
+
+function listHTML(stageId, list, emptyMsg = "") {
+  return `<div class="list" data-st="${stageId}">
+    <div class="lrow hd"><span class="m">م</span><span>اسم المدرسة</span><span>موقع المدرسة</span></div>
+    ${list.length ? list.map(rowHTML).join("") : `<div class="empty">${emptyMsg}</div>`}
+  </div>`;
+}
+function rowHTML(s) {
+  let note = "";
+  if (s.host) note = `مستضافة – تقع في مبنى المدرسة المستضيفة: <button data-go="school:${s.host}">${esc(BY_ID[s.host].name)}</button>`;
+  if (s.guests) note = `مدرسة مستضيفة لـ: ${s.guests.map(g => `<button data-go="school:${g}">${esc(BY_ID[g].name)}</button>`).join(" + ")}`;
+  const tags = tagsOf(s).filter(t => t[0] !== "merged" && t[0] !== "tracks");
+  return `<div class="lrow ${note ? "mg" : ""}">
+    <span class="m num">${s.n}</span>
+    <div><button class="nm" data-go="school:${s.id}">${esc(s.name)}</button>
+      ${tags.length ? `<div class="tags">${tags.map(t => `<span class="chip">${t[1]}</span>`).join("")}</div>` : ""}
+      ${note ? `<div class="note">${note}</div>` : ""}</div>
+    ${mapLink(s)}
+  </div>`;
+}
+function bnode(s, role, link = false) {
+  const cur = !link && s.id === S.arg;
+  return `<button class="bnode ${cur ? "cur" : ""}" data-st="${s.s}" ${cur ? 'aria-current="true"' : `data-go="school:${s.id}"`}><span class="sw"></span><span>${esc(s.name)}</span><small>${role} · ${STAGE[s.s].short}</small></button>`;
+}
+
+/* ============================================================
+   الرسم والأحداث
+   ============================================================ */
+function render() {
+  $("#view").innerHTML = PAGES[S.view]();
+  const t = { stage: () => STAGE[S.arg].name, school: () => BY_ID[S.arg].name, tag: () => TAG[S.arg][1], merged: () => "التعليم المدمج" }[S.view];
+  document.title = (t ? t() + " · " : "") + "دليل مدارس النطاق الرابع";
+}
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 2600); }
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("button, a"); if (!t) return;
+  const d = t.dataset;
+  if (d.go) { e.preventDefault(); const [v, a] = d.go.split(":"); return go(v, a || null); }
+  if (d.toggle) { S.open.has(d.toggle) ? S.open.delete(d.toggle) : S.open.add(d.toggle); return renderTree(); }
+  if (d.filter) { S.filter = d.filter; return render(); }
+  if (d.copy) {
+    const ok = () => toast("نُسخ اسم المدرسة"), fail = () => toast("تعذّر النسخ، حدّد الاسم وانسخه يدويًا");
+    try { navigator.clipboard.writeText(d.copy).then(ok, fail); } catch (err) { fail(); }
+  }
+});
+
+document.addEventListener("input", e => {
+  if (e.target.id !== "localQ") return;
+  S.local = e.target.value;
+  const pos = e.target.selectionStart;
+  render();
+  const n = $("#localQ"); n.focus(); try { n.setSelectionRange(pos, pos); } catch (err) {}
+});
+
+/* ---------------- البحث الشامل ---------------- */
+const norm = s => String(s).replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي").replace(/[ً-ْ]/g, "").replace(/\s+/g, " ").toLowerCase();
+$("#q").addEventListener("input", e => {
+  const raw = e.target.value.trim(); const q = norm(raw);
+  const box = $("#results");
+  if (q.length < 2) { box.hidden = true; return; }
+  const terms = q.split(" ");
+  const hits = SCHOOLS.filter(s => { const h = norm(s.name); return terms.every(t => h.includes(t)); });
+  box.innerHTML = hits.length
+    ? hits.slice(0, 12).map(s => `<button data-hit="${s.id}" data-st="${s.s}"><span class="sw"></span>${esc(s.name)}<small>${STAGE[s.s].short} · <span class="num">${s.n}</span></small></button>`).join("") +
+      (hits.length > 12 ? `<p class="small muted" style="padding:6px 10px">و<span class="num">${hits.length - 12}</span> نتيجة أخرى، أضف كلمة لتضييق البحث.</p>` : "")
+    : `<p class="small muted" style="padding:8px">لا توجد مدرسة باسم «${esc(raw)}». جرّب جزءًا من الاسم أو رقم المدرسة مثل 232.</p>`;
+  box.hidden = false;
+});
+$("#results").addEventListener("click", e => {
+  const b = e.target.closest("[data-hit]"); if (!b) return;
+  e.stopPropagation();
+  $("#results").hidden = true; $("#q").value = ""; $("#searchBox").classList.remove("show");
+  go("school", b.dataset.hit);
+});
+document.addEventListener("click", e => { if (!e.target.closest("#searchBox") && !e.target.closest("#searchBtn")) $("#results").hidden = true; });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { $("#results").hidden = true; closeDrawer(); } });
+$("#searchBtn").addEventListener("click", () => { $("#searchBox").classList.toggle("show"); $("#q").focus(); });
+
+/* ---------------- القائمة الجانبية والمظهر ---------------- */
+function closeDrawer() { $("#side").classList.remove("open"); $("#scrim").classList.remove("open"); $("#menuBtn").setAttribute("aria-expanded", "false"); }
+$("#menuBtn").addEventListener("click", () => { const o = $("#side").classList.toggle("open"); $("#scrim").classList.toggle("open", o); $("#menuBtn").setAttribute("aria-expanded", String(o)); });
+$("#scrim").addEventListener("click", closeDrawer);
+$("#themeBtn").addEventListener("click", () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next; store.set("theme", next);
+});
+
+(function boot() {
+  document.documentElement.lang = "ar"; document.documentElement.dir = "rtl";
+  const th = store.get("theme", null); if (th) document.documentElement.dataset.theme = th;
+  const h = (location.hash || "").slice(1);
+  if (STAGE[h]) return go("stage", h);
+  if (h.startsWith("school-") && BY_ID[h.slice(7)]) return go("school", h.slice(7));
+  if (h.startsWith("tag-") && TAG[h.slice(4)]) return go("tag", h.slice(4));
+  if (h === "merged") return go("merged");
+  go("home");
+})();
+</script>
+</body>
+</html>
