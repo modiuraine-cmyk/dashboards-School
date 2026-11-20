@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: stale-summary-asks-first
+expected_outcome: |
+  ينبّه إلى أن الملخص عمره 16 يوماً ويسأل قبل كتابة الخطاب. الأرقام: 3 عضوات (منتظمة 1، متأخرة 1، لم ترفع 1)، متوسط 30%، والأخصائية منفصلة. لا إرسال.
+context:
+  scaffold_script: place-files.sh
